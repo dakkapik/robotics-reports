@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Report</title>
+</head>
+<body>
+    <form action="http://localhost:5000/report" method="post">
+        <label for="name">name:</label><br>
+        <input type="text" id="name" name="name"><br>
+        <label for="date">date:</label><br>
+        <input type="date" id="date" name="date"><br>
+        <label for="goals">Goals</label><br>
+        <textarea id="goals" name="goals" rows="5" cols="50">
+        </textarea><br>
+        <label for="results">Results</label><br>
+        <textarea id="results" name="results" rows="5" cols="50">
+        </textarea><br>
+        <input type="submit" value="Submit">
+    </form>
+    <div>
+        <p>Define daily goals with "-[goal name]"</p>
+        <p>Add with results to each goal with "-[result name]"</p>
+    </div>
+</body>
+</html>
