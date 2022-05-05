@@ -7,14 +7,19 @@
     <title>Report</title>
 </head>
 <body>
-    <form action="http://localhost:5000/report" method="post">
-        <label for="name">name:</label><br>
-        <input type="text" id="name" name="name"><br>
+    <form action="<%= address %>/reports" method="post" id="form">
+        <label for="name">name:</label>
+        <select id="user-select" name="user" form="form">
+            <option>REPORTER NAME</option>
+            <% users.forEach((user) =>{%>
+               <option value="<%= user._id %>"><%= user.name %></option> 
+            <%})%>
+        </select><br>
         <label for="goals">Goals</label><br>
-        <textarea id="goals" name="goals" rows="5" cols="50">
+        <textarea id="goals" name="goals" rows="5" cols="50" >
         </textarea><br>
         <label for="results">Results</label><br>
-        <textarea id="results" name="results" rows="5" cols="50">
+        <textarea id="results" name="results" rows="5" cols="50" >
         </textarea><br>
         <input type="submit" value="Submit">
     </form>
@@ -23,7 +28,4 @@
         <p>Add with results to each goal with "-[result name]"</p>
     </div>
 </body>
-<script>
-    
-</script>
 </html>

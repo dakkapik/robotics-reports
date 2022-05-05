@@ -2,8 +2,8 @@ const express = require('express')
 const app = express()
 
 require('dotenv').config()
-require('./db')
-require('./router')(app)
+require('./setup/db')
+require('./setup/router')(app)
 
 const port = process.env.PORT || 5000
 

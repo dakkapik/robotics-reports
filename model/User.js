@@ -1,9 +1,9 @@
-// Declare the Schema of the Mongo model
+const mongoose = require("mongoose")
+
 const userSchema = new mongoose.Schema({
     name:{
         type:String,
         required:true,
-        unique:true,
         index:true,
     },
     email:{
@@ -22,3 +22,4 @@ const userSchema = new mongoose.Schema({
     },
 });
 
+module.exports = mongoose.model('User', userSchema);

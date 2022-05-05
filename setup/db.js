@@ -7,7 +7,7 @@ mongoose.connect('mongodb://localhost:27017/MDC-robotics', {
     useNewUrlParser: true
 }, (err) => {
     if (!err) {
-        console.log('MongoDB Connection Succeeded.')
+        console.log('> MongoDB Connection Succeeded.')
     } else {
         console.log('Error in DB connection: ' + err)
     }

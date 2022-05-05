@@ -1,10 +1,12 @@
-const mongoose = require('mongoose'); // Erase if already required
-const User = require("./User");
+const mongoose = require('mongoose');
 const moment = require("moment")
 
 // Declare the Schema of the Mongo model
-var userSchema = new mongoose.Schema({
-    User,
+const reportSchema = new mongoose.Schema({
+    user_id: {
+        type: String,
+        required: true
+    },
     date:{
         type: String,
         default: moment().format("DD-MM-YYYY"),
@@ -21,4 +23,4 @@ var userSchema = new mongoose.Schema({
 });
 
 //Export the model
-module.exports = mongoose.model('User', userSchema);
+module.exports = mongoose.model('Reports', reportSchema);
