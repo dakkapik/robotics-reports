@@ -33,7 +33,7 @@
     const form = document.getElementById("form")
     const message = document.getElementById("message")
     const userSelect = document.getElementById("user-select")
-
+    console.log(form.action + "users")
     fetch(form.action + "users")
     .then(response => response.json())
     .then(data => {
