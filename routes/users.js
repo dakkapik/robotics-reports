@@ -1,5 +1,7 @@
 const router = require('express').Router()
-const User = require("../model/User")
+const { User, validateUser } = require("../model/User")
+const sec = require("../util/sec")
+const address = require("../util/address")
 
 router.get('/' , (req , res)=>{
     User.find({}, (err, docs) => {
@@ -15,26 +17,36 @@ router.get('/' , (req , res)=>{
     });
 })
 
-router.post('/' , (req , res)=>{
+router.post('/' , async (req , res)=>{
+  try {
+    const { error } = validateUser(req.body)
+    if(error) return res.render("index", {address, error: error})
 
-  const createUser = (doc) => {
-    if (doc !== []) {
-      User.create(req.body)
-      .then((docs) => res.send(docs))
-    } else{
-      console.log("THIS HAPPENED")
-      //send what part exists
-      res.send("ERROR user already exists").status(400)
-    }
+    let user = await User.findOne({$or:[{email: req.body.email}, {mobile: req.body.mobile}]})
+
+    if(user !== null) return res.render("index", {address, error: user + "user already exists"})
+
+    // console.log("THIS HAPPENED")
+    sec.cryptPassword(req.body.password, (err, pswrd) => {
+      if(err) throw new Error(err)
+      else {
+        user = {
+          name: req.body.name,
+          email: req.body.email,
+          mobile: req.body.mobile,
+          password: pswrd
+        }
+
+        User.create(user)
+        .then((docs) => res.render("index", {address, error: ""}))
+        .catch(error => console.error(error))
+      }
+    })
+  } catch(err) {
+    console.error(err)
+    res.render("index", {address, error: "UNKNOWN: ",err})
+    // res.sendStatus(400)
   }
-
-  User.find({$or:[{email: req.body.email}, {mobile: req.body.mobile}]})
-  .then( createUser )
-  .catch(err => {
-    console.error("ERROR: ", err)
-    res.send("ERROR: ", error).status(400)
-  })
-  
 })
 
 module.exports  = router

@@ -7,14 +7,14 @@
     <title>Report</title>
 </head>
 <body>
-    <form action="<%= address %>/reports" method="post" id="form">
-        <label for="name">name:</label>
-        <select id="user-select" name="user" form="form">
-            <option>REPORTER NAME</option>
-            <% users.forEach((user) =>{%>
-               <option value="<%= user._id %>"><%= user.name %></option> 
-            <%})%>
-        </select><br>
+    <form action="<%= address %>" method="post" id="form">
+        <div>
+            <label for="name">name:</label>
+            <select id="user-select" name="user_id" form="form">
+                <option>REPORTER NAME</option>
+            </select>
+            <input id="password" name="password" type="password" placeholder="PASSWORD" required>
+        </div>
         <label for="goals">Goals</label><br>
         <textarea id="goals" name="goals" rows="5" cols="50" >
         </textarea><br>
@@ -27,5 +27,58 @@
         <p>Define daily goals with "-[goal name]"</p>
         <p>Add with results to each goal with "-[result name]"</p>
     </div>
+    <div id="message"></div>
 </body>
+<script>
+    const form = document.getElementById("form")
+    const message = document.getElementById("message")
+    const userSelect = document.getElementById("user-select")
+
+    fetch(form.action + "users")
+    .then(response => response.json())
+    .then(data => {
+        console.log(data)
+        data.forEach(user => {
+            const op = document.createElement("option")
+            op.value = user._id
+            op.innerHTML = user.name
+            userSelect.appendChild(op)
+        });
+    })
+
+    const submit = async (e) => {
+        e.preventDefault()
+        const response = await fetch(form.action + "reports", {
+            method: 'POST', // *GET, POST, PUT, DELETE, etc.
+            mode: 'cors', // no-cors, *cors, same-origin
+            cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+            credentials: 'same-origin', // include, *same-origin, omit
+            headers: {
+            'Content-Type': 'application/json'
+            // 'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            redirect: 'follow', // manual, *follow, error
+            referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+            body: JSON.stringify({
+                user_id: userSelect.value,
+                password: document.getElementById("password").value,
+                goals: document.getElementById("goals").value,
+                results: document.getElementById("results").value
+            }) // body data type must match "Content-Type" header
+        });
+
+        response.json()
+        .then(data => {
+            if(data.error){
+                message.innerHTML = "ERROR: " + data.error
+            } else {
+                message.innerHTML = "REPORT SUBMITED"
+            }
+
+        })
+    }
+
+    form.addEventListener("submit", submit, true)
+    
+</script>
 </html>

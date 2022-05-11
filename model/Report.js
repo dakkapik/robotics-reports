@@ -1,7 +1,17 @@
-const mongoose = require('mongoose');
+const mongoose = require('mongoose')
 const moment = require("moment")
+const joi = require("joi")
 
-// Declare the Schema of the Mongo model
+const validateReport = (input) => {
+    const schema = joi.object({
+        user_id: joi.string(),
+        password: joi.string(),
+        goals: joi.string(),
+        results: joi.string()
+    })
+    return schema.validate(input)
+}
+
 const reportSchema = new mongoose.Schema({
     user_id: {
         type: String,
@@ -20,7 +30,8 @@ const reportSchema = new mongoose.Schema({
         type:String,
         required:true,
     },
-});
+})
 
 //Export the model
-module.exports = mongoose.model('Reports', reportSchema);
+module.exports.Report = mongoose.model('Reports', reportSchema)
+module.exports.validateReport = validateReport
