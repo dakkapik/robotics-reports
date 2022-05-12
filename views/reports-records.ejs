@@ -5,49 +5,100 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Report Records</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap');
+
+        html, body{
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+        }
+        ul {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+        li {
+            padding: 1vh;
+            border: 1px solid #000;
+        }
+
+        .page-change {
+            display: flex;
+            justify-content: center;
+        }
+        .page-change > h3 {
+            padding: 4px 22px 4px 22px;
+        }
+        .page-change > button {
+            background-color: #ee3737; /* Green */
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+        }
+
+    </style>
 </head>
 <body>
+    <div class="page-change" >
+        <button id="backward-top">←</button>
+        <h3 id="page-counter-top"><%= address %></h3>
+        <button id="forward-top">→</button>
+    </div>
     <ul>
     </ul>
-    <div style="display: flex;">
-        <button id="backward">←</button>
-        <h1 id="page-counter"><%= address %></h1>
-        <button id="forward">→</button>
+    <div class="page-change" >
+        <button id="backward-bottom">←</button>
+        <h3 id="page-counter-bottom"></h3>
+        <button id="forward-bottom">→</button>
     </div>
 </body>
 <script>
     const list = document.querySelector("ul")
-    const pageCounter = document.getElementById("page-counter")
-    const backwardButton = document.getElementById("backward")
-    const forwardButton = document.getElementById("forward")
-    const address = pageCounter.innerHTML
+    const pageCounterBottom = document.getElementById("page-counter-bottom")
+    const pageCounterTop = document.getElementById("page-counter-top")
+    const backwardTop = document.getElementById("backward-top")
+    const forwardTop = document.getElementById("forward-top")
+    const backwardBottom = document.getElementById("backward-bottom")
+    const forwardBottom = document.getElementById("forward-bottom")
+    const address = pageCounterTop.innerHTML
 
     let pageNumber = 0
     let pageLimit = 1
-    pageCounter.innerHTML = pageNumber + 1
+    pageCounterTop.innerHTML = pageNumber + 1
+    pageCounterBottom.innerHTML = pageNumber + 1
     
+    const removeChildren = (parent) => {
+        while (parent.firstChild) {
+            parent.removeChild(parent.firstChild);
+        }
+    }
+
     const renderRecords = (records) => {
-        console.log(records)
+        removeChildren(list)
         records.forEach(record => {
             const doc = document.createElement("li")
-            const author = document.createElement("h1")
+            const author = document.createElement("h3")
 
             const rep = document.createElement("div")
-            const date = document.createElement("h3")
             const goalsT = document.createElement("h4")
             const goals = document.createElement("p")
             const resultsT = document.createElement("h4")
             const results = document.createElement("p")
 
-            author.innerHTML = record.author.name
 
-            date.innerHTML = record.report.date
+            author.innerHTML = record.author.name + "  |  " + record.report.date
+
             goalsT.innerHTML = "GOALS"
             goals.innerHTML = record.report.goals
             resultsT.innerHTML = "RESULTS"
             results.innerHTML = record.report.results
 
-            rep.append(date)
             rep.append(goalsT)
             rep.append(goals)
             rep.append(resultsT)
@@ -70,9 +121,10 @@
     
 
     const pageChange =  (e) => {
-        if(e.path[0].id === "backward" && pageNumber > 0){
+        if(e.path[0].id.split('-')[0] === "backward" && pageNumber > 0){
             pageNumber --
-            pageCounter.innerHTML = pageNumber + 1
+            pageCounterTop.innerHTML = pageNumber + 1
+            pageCounterBottom.innerHTML = pageNumber + 1
             fetch(`${address}/reports/${pageNumber}`)
             .then(response => response.json())
             .then(data => {
@@ -81,9 +133,10 @@
             })
             .catch(err => console.error(err))
             
-        } else if (e.path[0].id === "forward" && pageNumber < pageLimit - 1){
+        } else if (e.path[0].id.split('-')[0] === "forward" && pageNumber < pageLimit - 1){
             pageNumber ++
-            pageCounter.innerHTML = pageNumber + 1
+            pageCounterTop.innerHTML = pageNumber + 1
+            pageCounterBottom.innerHTML = pageNumber + 1
             fetch(`${address}/reports/${pageNumber}`)
             .then(response => response.json())
             .then(data => {
@@ -93,9 +146,9 @@
             .catch(err => console.error(err))
         }
     }
-
-    backwardButton.addEventListener("click", pageChange)
-    forwardButton.addEventListener("click", pageChange)
-    
+    backwardTop.addEventListener("click", pageChange)
+    forwardTop.addEventListener("click", pageChange)
+    backwardBottom.addEventListener("click", pageChange)
+    forwardBottom.addEventListener("click", pageChange)
 </script>
 </html>
