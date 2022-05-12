@@ -20,5 +20,6 @@ router.get('/post-report' , (req , res)=> {
         }
     });
 })
+router.get('/records', (req,res) => res.render("reports-records", { address }))
 
 module.exports  = router

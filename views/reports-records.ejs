@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Report Records</title>
+</head>
+<body>
+    <ul>
+    </ul>
+    <div style="display: flex;">
+        <button id="backward">←</button>
+        <h1 id="page-counter"><%= address %></h1>
+        <button id="forward">→</button>
+    </div>
+</body>
+<script>
+    const list = document.querySelector("ul")
+    const pageCounter = document.getElementById("page-counter")
+    const backwardButton = document.getElementById("backward")
+    const forwardButton = document.getElementById("forward")
+    const address = pageCounter.innerHTML
+
+    let pageNumber = 0
+    let pageLimit = 1
+    pageCounter.innerHTML = pageNumber + 1
+    
+    const renderRecords = (records) => {
+        console.log(records)
+        records.forEach(record => {
+            const doc = document.createElement("li")
+            const author = document.createElement("h1")
+
+            const rep = document.createElement("div")
+            const date = document.createElement("h3")
+            const goalsT = document.createElement("h4")
+            const goals = document.createElement("p")
+            const resultsT = document.createElement("h4")
+            const results = document.createElement("p")
+
+            author.innerHTML = record.author.name
+
+            date.innerHTML = record.report.date
+            goalsT.innerHTML = "GOALS"
+            goals.innerHTML = record.report.goals
+            resultsT.innerHTML = "RESULTS"
+            results.innerHTML = record.report.results
+
+            rep.append(date)
+            rep.append(goalsT)
+            rep.append(goals)
+            rep.append(resultsT)
+            rep.append(results)
+
+            doc.append(author)
+            doc.append(rep)
+            list.append(doc)
+        });
+    }
+
+    fetch(`${address}/reports/${pageNumber}`)
+    .then(response => response.json())
+    .then(data => {
+        renderRecords(data.records)
+        pageLimit = data.pageCeil
+    })
+    .catch(err => console.error(err))
+        
+    
+
+    const pageChange =  (e) => {
+        if(e.path[0].id === "backward" && pageNumber > 0){
+            pageNumber --
+            pageCounter.innerHTML = pageNumber + 1
+            fetch(`${address}/reports/${pageNumber}`)
+            .then(response => response.json())
+            .then(data => {
+                pageLimit = data.pageCeil
+                renderRecords(data.records)
+            })
+            .catch(err => console.error(err))
+            
+        } else if (e.path[0].id === "forward" && pageNumber < pageLimit - 1){
+            pageNumber ++
+            pageCounter.innerHTML = pageNumber + 1
+            fetch(`${address}/reports/${pageNumber}`)
+            .then(response => response.json())
+            .then(data => {
+                pageLimit = data.pageCeil
+                renderRecords(data.records)
+            })
+            .catch(err => console.error(err))
+        }
+    }
+
+    backwardButton.addEventListener("click", pageChange)
+    forwardButton.addEventListener("click", pageChange)
+    
+</script>
+</html>

@@ -4,26 +4,49 @@ const { User } = require("../model/User")
 const { comparePassword } = require("../util/sec")
 const address = require("../util/address")
 
-router.get('/' , (req , res)=>{
-    Report.find({}, (err, docs) => {
-       if(err){
-           console.log(`Error: ` + err)
-       } else{
-         if(docs.length === 0){
-             console.log("No reports found in this database")
-         } else{
-           res.send(docs)
-         }
-       }
-    });
+router.get('/:page' , async (req , res)=>{
+    const recordLimit = 10
+
+    try{
+        const reports = await Report
+        .find()
+        .sort("-date")
+        .skip(recordLimit * req.params.page)
+        .limit(recordLimit)
+
+        const docCount = await Report.countDocuments({})
+
+        const usersReq = reports.map((report) => User.findById(report.user_id).select({name: 1, email: 1, mobile: 1}))
+
+        const users = await Promise.allSettled(usersReq)
+
+        const rep = reports.map((report, index) => Object.assign({}, {report, author: users[index].value}))
+        // users
+        //     .filter(({status}) => status === 'rejected')
+        //     //better rejection method
+        //     .forEach(({reason}) => console.error(reason))
+        
+        // const data = reports
+        //     .filter((report, index)=> users[] ==='fulfilled')
+        //     .map(({value}, index) => reports[index].author = value)
+
+        //better rejection method
+        res.send({ records: rep , pageCeil: Math.ceil(docCount / recordLimit)})
+
+        // stop request at max number of records 
+
+    } catch (err) {
+        console.error("REPORT GET ERROR: ", err)
+    }
 })
 
 router.post('/' , (req , res)=>{
+    // cannot spam submmit reports, only one report for day
     const { error } = validateReport({user_id: req.body.user_id, goals: req.body.goals, results: req.body.results})
     if(error) res.send({ error })
 
     User.findById(req.body.user_id).then(user => {
-        
+
         comparePassword(req.body.password, user.password, (err, match) => {
             if(err) res.send({ error })
             if(match){
