@@ -1,5 +1,15 @@
 const express = require('express')
 const app = express()
+const EndpointSpamProtector = require('express-endpoint-spam-protector');
+
+const config = {
+      minuteInterval: 15, // default value is 15
+      requestAmountBeforeBan: 50, // default value is 50
+      rejectionCode: 401 // default value is 401
+};
+const protector = new EndpointSpamProtector(config);
+
+app.use(protector.protect);
 
 require('dotenv').config()
 require('./setup/db')

@@ -22,6 +22,11 @@ const reportSchema = new mongoose.Schema({
         default: moment().format("DD-MM-YYYY"),
         required:true,
     },
+    time: {
+        type: String,
+        default: moment().format("h:mm"),
+        required:true,
+    },
     goals:{
         type:String,
         required:true,

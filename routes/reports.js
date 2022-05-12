@@ -2,7 +2,6 @@ const router = require('express').Router()
 const { Report, validateReport } = require("../model/Report")
 const { User } = require("../model/User")
 const { comparePassword } = require("../util/sec")
-const address = require("../util/address")
 
 router.get('/:page' , async (req , res)=>{
     const recordLimit = 10
@@ -10,7 +9,7 @@ router.get('/:page' , async (req , res)=>{
     try{
         const reports = await Report
         .find()
-        .sort("-date")
+        .sort({data: -1, time: +1})
         .skip(recordLimit * req.params.page)
         .limit(recordLimit)
 
