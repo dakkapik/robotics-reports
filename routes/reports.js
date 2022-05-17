@@ -41,6 +41,7 @@ router.get('/:page' , async (req , res)=>{
 
 router.post('/' , (req , res)=>{
     // cannot spam submmit reports, only one report for day
+    if(req.body.user_id === "REPORTER NAME") res.send({error: "must select an reporter and type password"})
     const { error } = validateReport({user_id: req.body.user_id, goals: req.body.goals, results: req.body.results})
     if(error) res.send({ error })
 

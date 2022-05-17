@@ -1,6 +1,5 @@
 const express = require('express')
 const app = express()
-const EndpointSpamProtector = require('express-endpoint-spam-protector');
 
 const config = {
       minuteInterval: 15, // default value is 15
