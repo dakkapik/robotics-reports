@@ -46,10 +46,10 @@ router.post('/' , (req , res)=>{
     const { error } = validateReport({user_id: req.body.user_id, goals: req.body.goals, results: req.body.results})
     if(error) return res.send({ error })
 
-    User.findById(req.body.user_id).then(user => {
+    User.findById(req.body.user_id).then(async ( user ) => {
 
-        const duplicate = Report.find({user_id: user._id, date: moment().format("DD-MM-YYYY")})
-        if(duplicate) return res.send({error: "Cannot submit more than one report per day\nEdit report tool comming soon"})
+        const duplicate = await Report.find({user_id: user._id, date: moment().format("DD-MM-YYYY")})
+        if(duplicate.lenght !== 0) return res.send({error: "Cannot submit more than one report per day\nEdit report tool comming soon"})
 
         comparePassword(req.body.password, user.password, (err, match) => {
             if(err) return res.send({ error })
