@@ -2,7 +2,7 @@ const router = require('express').Router()
 const { Report, validateReport } = require("../model/Report")
 const { User } = require("../model/User")
 const { comparePassword } = require("../util/sec")
-const moment = require("moment")
+const moment = require("moment-timezone")
 
 router.get('/:page' , async (req , res)=>{
     const recordLimit = 10
@@ -47,10 +47,9 @@ router.post('/' , (req , res)=>{
     if(error) return res.send({ error })
 
     User.findById(req.body.user_id).then(async ( user ) => {
-
-        const duplicate = await Report.find({user_id: user._id, date: moment().format("DD-MM-YYYY")})
-        if(duplicate.lenght !== 0) return res.send({error: "Cannot submit more than one report per day\nEdit report tool comming soon"})
-
+        const duplicate = await Report.find({user_id: user._id, date: moment().tz("America/New_York").format("DD-MM-YYYY")})
+        if(duplicate.length !== 0) return res.send({error: "Cannot submit more than one report per day\nEdit report tool comming soon"})
+        
         comparePassword(req.body.password, user.password, (err, match) => {
             if(err) return res.send({ error })
             if(match){

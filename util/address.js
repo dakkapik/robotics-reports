@@ -14,6 +14,6 @@ for(const name of Object.keys(nets)){
     }
 }
 
-if(process.env.NODE_ENV === "production") module.exports = "https://mdc-robotics.herokuapp.com"
-// if(process.env.NODE_ENV === "production") module.exports = "http://" + Object.values(results)[0] + ":" + process.env.PORT
+// if(process.env.NODE_ENV === "production") module.exports = "https://mdc-robotics.herokuapp.com"
+if(process.env.NODE_ENV === "production") module.exports = "http://" + Object.values(results)[0] + ":" + process.env.PORT
 if(process.env.NODE_ENV === "development") module.exports = "http://" + Object.values(results)[0] + ":" + process.env.PORT

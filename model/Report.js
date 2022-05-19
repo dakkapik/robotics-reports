@@ -1,5 +1,5 @@
 const mongoose = require('mongoose')
-const moment = require("moment")
+const moment = require("moment-timezone")
 const joi = require("joi")
 
 const validateReport = (input) => {
@@ -19,7 +19,7 @@ const reportSchema = new mongoose.Schema({
     },
     date:{
         type: String,
-        default: moment().format("DD-MM-YYYY"),
+        default: moment().tz("America/New_York").format("DD-MM-YYYY"),
         required:true,
     },
     time: {
