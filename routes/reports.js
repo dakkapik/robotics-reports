@@ -10,7 +10,7 @@ router.get('/:page' , async (req , res)=>{
     try{
         const reports = await Report
         .find()
-        .sort({date: -1, time: +1})
+        .sort([['_id', -1]])
         .skip(recordLimit * req.params.page)
         .limit(recordLimit)
 
